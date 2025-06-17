@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告 HTML 產生器</title>
+    <!-- 引入 Bootstrap 5 CSS，讓表格樣式能正確顯示 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        h1, h3 {
+            color: #343a40;
+        }
+        #output-html {
+            height: 300px;
+            font-family: monospace;
+            background-color: #e9ecef;
+        }
+        #preview-area {
+            border: 1px solid #dee2e6;
+            padding: 1rem;
+            background-color: #fff;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">公告 HTML 產生器</h1>
+        <p class="text-center text-muted">請在左側表單中填入資料，右側將會即時產生對應的 HTML 程式碼與預覽。</p>
+
+        <div class="row g-5">
+            <!-- 左側：輸入表單 -->
+            <div class="col-md-6">
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/></svg> 輸入資料</h3>
+                <form id="announcement-form">
+                    <div class="mb-3">
+                        <label for="content" class="form-label"><b>公告內容</b> (必填)</label>
+                        <textarea class="form-control" id="content" rows="6" placeholder="請在此輸入詳細的公告內容..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="url" class="form-label"><b>相關網址</b></label>
+                        <input type="text" class="form-control" id="url" placeholder="例如：https://www.example.com (若無可不填)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact" class="form-label"><b>聯絡單位</b></label>
+                        <input type="text" class="form-control" id="contact" placeholder="例如：資訊處 網路組 王先生 (02)1234-5678">
+                    </div>
+                    <div class="mb-3">
+                        <label for="attachments" class="form-label"><b>附件</b></label>
+                        <textarea class="form-control" id="attachments" rows="3" placeholder="若有多個附件，請用「換行」分隔。
+例如：
+附件一：活動流程.pdf
+附件二：報名表.docx"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label"><b>備註</b></label>
+                        <textarea class="form-control" id="remarks" rows="2" placeholder="請在此輸入補充說明事項..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 右側：輸出結果 -->
+            <div class="col-md-6">
+                <!-- 預覽區 -->
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/></svg> 即時預覽</h3>
+                <div id="preview-area">
+                    <p class="text-muted">請在左側填寫資料以生成預覽...</p>
+                </div>
+
+                <!-- 程式碼輸出區 -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16"><path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"/></svg> 產生的 HTML</h3>
+                    <button id="copy-btn" class="btn btn-sm btn-success">複製程式碼</button>
+                </div>
+                <textarea id="output-html" class="form-control mt-2" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 獲取所有需要操作的 DOM 元素
+        const formInputs = document.querySelectorAll('#announcement-form input, #announcement-form textarea');
+        const outputHtmlEl = document.getElementById('output-html');
+        const previewAreaEl = document.getElementById('preview-area');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // 主要的 HTML 生成函數
+        function generateHtml() {
+            // 獲取各個欄位的值，並進行 trim() 清除前後空白
+            const content = document.getElementById('content').value.trim();
+            const url = document.getElementById('url').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const attachments = document.getElementById('attachments').value.trim();
+            const remarks = document.getElementById('remarks').value.trim();
+
+            // 處理「相關網址」：如果使用者有輸入，則產生一個可點擊的連結
+            const urlHtml = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>` : '無';
+
+            // 處理「附件」：將換行符號轉換成 <p> 標籤，讓每個附件都獨立成行
+            const attachmentsHtml = attachments 
+                ? attachments.split('\n').filter(line => line.trim() !== '').map(line => `<p>${line.trim()}</p>`).join('') 
+                : '無';
+
+            // 處理「公告內容」、「聯絡單位」、「備註」：確保即使是多行文字也能正確換行顯示
+            // 使用 <pre> 標籤可以保留使用者輸入的換行和空格，並設定樣式讓它能自動換行
+            const formatMultilineText = (text) => {
+                if (!text) return '無';
+                // 使用 <p> 標籤並將換行符 \n 轉換為 <br>
+                return `<p>${text.replace(/\n/g, '<br>')}</p>`;
+            };
+
+            // 模板字串，將處理好的資料填入 HTML 結構中
+            const finalHtml = `
+<table class="table table-bordered">
+	<thead>
+		<tr class="bg-warning">
+			<th scope="col" style="text-align: center;" width="10%">項　　目</th>
+			<th scope="col" style="text-align: center;" width="90%">內　容　說　明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;">公告內容</td>
+			<td style="text-align: justify;">
+				${formatMultilineText(content) || '<p> </p>'}
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;">相關網址</td>
+			<td style="text-align: justify;">${urlHtml}</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;">聯絡單位</td>
+			<td style="text-align: justify;">${contact || '無'}</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;">附　　件</td>
+			<td style="text-align: justify;">${attachmentsHtml}</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;">備　　註</td>
+			<td style="text-align: justify;">${remarks || '無'}</td>
+		</tr>
+	</tbody>
+</table>`;
+            
+            // 將最終產生的 HTML 放入輸出框和預覽區
+            // 使用 .trim() 移除模板字串前後多餘的換行
+            outputHtmlEl.value = finalHtml.trim();
+            previewAreaEl.innerHTML = finalHtml.trim();
+        }
+
+        // 為所有輸入框添加 'input' 事件監聽器，實現即時更新
+        formInputs.forEach(input => {
+            input.addEventListener('input', generateHtml);
+        });
+
+        // 複製按鈕的點擊事件
+        copyBtn.addEventListener('click', () => {
+            if (!outputHtmlEl.value) {
+                alert('沒有可複製的內容！');
+                return;
+            }
+            // 使用 Clipboard API 進行複製
+            navigator.clipboard.writeText(outputHtmlEl.value).then(() => {
+                // 複製成功後給予使用者回饋
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已複製！';
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-primary');
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('btn-primary');
+                    copyBtn.classList.add('btn-success');
+                }, 1500); // 1.5秒後恢復原狀
+            }).catch(err => {
+                console.error('複製失敗: ', err);
+                alert('複製失敗，請手動複製。');
+            });
+        });
+
+        // 頁面載入時先執行一次，以顯示初始的空狀態
+        generateHtml();
+
+    </script>
+</body>
+</html>
